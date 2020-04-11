@@ -1,12 +1,10 @@
 package com.huawei.hiaicodedemo.activity;
 
+import android.graphics.BitmapFactory;
 import androidx.annotation.Nullable;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +23,6 @@ import com.huawei.hiaicodedemo.widget.TitleBar;
 public class ImageSuperActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String TAG = ImageSuperActivity.class.getSimpleName();
-    private final static int SUPERRESOLUTION_RESULT = 110;
     private android.widget.ImageView superOrigin;
     private android.widget.ImageView superImage;
     private Bitmap bitmap;
@@ -46,7 +43,6 @@ public class ImageSuperActivity extends BaseActivity implements View.OnClickList
 
 
 
-
     }
 
     /**
@@ -58,8 +54,7 @@ public class ImageSuperActivity extends BaseActivity implements View.OnClickList
 
 
 
-        this.bmp = bmp;
-        handler.sendEmptyMessage(SUPERRESOLUTION_RESULT);
+        superImage.setImageBitmap(bmp);
     }
 
     /**
@@ -129,27 +124,10 @@ public class ImageSuperActivity extends BaseActivity implements View.OnClickList
         Log.e(TAG, "width:" + width + ";height:" + height);
         if (width <= 800 && height <= 600) {
             superOrigin.setImageBitmap(bitmap);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    setHiAi();
-                }
-            }).start();
+            setHiAi();
         } else {
             toast(getString(R.string.isr_toast_2));
         }
     }
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SUPERRESOLUTION_RESULT:
-                    superImage.setImageBitmap(bmp);
-                    break;
-            }
-        }
-    };
 
 }

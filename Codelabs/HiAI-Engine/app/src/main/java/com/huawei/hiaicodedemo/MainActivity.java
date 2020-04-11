@@ -10,10 +10,17 @@ import android.view.View;
 
 import com.huawei.hiai.vision.common.ConnectionCallback;
 import com.huawei.hiai.vision.common.VisionBase;
+import com.huawei.hiai.vision.image.detector.AestheticsScoreDetector;
+import com.huawei.hiai.vision.image.segmentation.ImageSegmentation;
+import com.huawei.hiai.vision.image.segmentation.SegConfiguration;
 import com.huawei.hiai.vision.image.sr.ImageSuperResolution;
+import com.huawei.hiai.vision.text.TableDetector;
 import com.huawei.hiai.vision.text.TextDetector;
+import com.huawei.hiaicodedemo.activity.AestheticScoreActivity;
 import com.huawei.hiaicodedemo.activity.ImageSuperActivity;
+import com.huawei.hiaicodedemo.activity.TableRecognitionActivity;
 import com.huawei.hiaicodedemo.activity.TextDetectActivity;
+import com.huawei.hiaicodedemo.activity.VideoSegmentActivity;
 import com.huawei.hiaicodedemo.widget.BackgroundDrawable;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -22,6 +29,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private boolean isSuccess = false;
     private int IMAGE_SUPER;
     private int TEXT_DETECT;
+    private int AESTHETICS_SCORE;
+    private int TABLE_DETECT;
+    private int VIDEO_SEGMENT;
     private final String[] permission = {
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -41,13 +51,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onServiceConnect() {
                 isSuccess = true;
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        isSupport();
-                    }
-                }).start();
-
+                isSupport();
             }
 
             @Override
@@ -60,20 +64,55 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void isSupport() {
         imageSuper();
         textDetect();
+        aestheticScore();
+        tableRecognition();
+        videoSegment();
     }
 
+    private void aestheticScore() {
+        AestheticsScoreDetector aestheticsScoreDetector = new AestheticsScoreDetector(mContext);
+        int availability = aestheticsScoreDetector.getAvailability();
+        AESTHETICS_SCORE = availability;
+        result(availability, aestheticsScoreDetector);
+    }
+
+    private void tableRecognition() {
+        TableDetector tableDetector = new TableDetector(mContext);
+        int availability = tableDetector.getAvailability();
+        TABLE_DETECT = availability;
+        result(availability, tableDetector);
+    }
 
     private void textDetect() {
         TextDetector textDetector = new TextDetector(mContext);
-        int availability = textDetector.prepare();
+        int availability = textDetector.getAvailability();
         TEXT_DETECT = availability;
         result(availability, textDetector);
     }
 
-    private void result(int availability, VisionBase base) {
+    private void videoSegment() {
+        ImageSegmentation imageSegmentation = new ImageSegmentation(mContext);
+        SegConfiguration build = new SegConfiguration.Builder().setProcessMode(SegConfiguration.MODE_IN)
+                .setSegmentationType(SegConfiguration.TYPE_PORTRAIT_SEGMENTATION_VIDEO)
+                .setOutputType(SegConfiguration.OUTPUT_TYPE_BYTEARRAY)
+                .build();
+        imageSegmentation.setConfiguration(build);
+        int availability = imageSegmentation.getAvailability();
+        VIDEO_SEGMENT = availability;
+        result(availability, imageSegmentation);
+    }
+
+    private void result(int availability,final VisionBase base) {
         if (availability == 0) {//support
 
-        } else {
+        }else if (availability == -6) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    VideoSegmentActivity.loadPlugin(base);
+                }
+            }).start();
+        }  else {
 
         }
         releaseEngine(base);
@@ -81,7 +120,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void imageSuper() {
         ImageSuperResolution superResolution = new ImageSuperResolution(mContext);
-        int availability = superResolution.prepare();
+        int availability = superResolution.getAvailability();
         IMAGE_SUPER = availability;
         result(availability, superResolution);
 
@@ -105,6 +144,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         findViewById(R.id.image_super).setOnClickListener(this);
         findViewById(R.id.text_detector).setOnClickListener(this);
+        findViewById(R.id.aesthetic_score).setOnClickListener(this);
+        findViewById(R.id.table_recognition).setOnClickListener(this);
+        findViewById(R.id.video_seg).setOnClickListener(this);
     }
 
     @Override
@@ -116,6 +158,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     break;
                 case R.id.text_detector:
                     isGoTo(TEXT_DETECT, TextDetectActivity.class);
+                    break;
+                case R.id.video_seg:
+                    isGoTo(VIDEO_SEGMENT, VideoSegmentActivity.class);
+                    break;
+                case R.id.aesthetic_score:
+                    isGoTo(AESTHETICS_SCORE, AestheticScoreActivity.class);
+                    break;
+                case R.id.table_recognition:
+                    isGoTo(TABLE_DETECT, TableRecognitionActivity.class);
                     break;
                 default:
             }

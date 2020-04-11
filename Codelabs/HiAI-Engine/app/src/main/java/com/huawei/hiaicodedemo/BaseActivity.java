@@ -5,29 +5,23 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.huawei.hiai.vision.common.VisionBase;
 
-import java.io.File;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 public abstract class BaseActivity extends AppCompatActivity {
     public static final int REQUEST_PHOTO = 100;
-    public static final int REQUEST_CAMERA = 101;
-    public static final int REQUEST_CODE = 102;
-    public static final int REQUEST_SELECT_MATERIAL_CODE = 103;
+    public static final int REQUEST_CODE = 101;
+    public static final int REQUEST_SELECT_MATERIAL_CODE = 102;
     public static final String KEY_FILE_PATH = "filePath";
     public static final String KEY_DIR_PATH = "dirPath";
     public Context mContext;
@@ -54,27 +48,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void takePhoto() {
-
-        File tmpDir = new File(Environment.getExternalStorageDirectory() + "/temp");
-        if (!tmpDir.exists()) {
-            tmpDir.mkdir();
-        }
-
-        File img = new File(tmpDir.getAbsolutePath() + "/test.png");
-
-        if (Build.VERSION.SDK_INT >= 24) {
-
-            photoUri = FileProvider.getUriForFile(mContext, "com.huawei.hiaicodedemo", img);
-
-        } else {
-            photoUri = Uri.fromFile(img);
-        }
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
-
     public void selectImage() {
         //Intent intent = new Intent("android.intent.actionBar.GET_CONTENT");
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -93,11 +66,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void actionBar(String title) {
-        getSupportActionBar().setTitle(title);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void setLanguage(){
