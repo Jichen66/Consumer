@@ -3,12 +3,14 @@
 
 ## Table of Contents
 
-* [Introduction](#introduction)
-* [Installation](#installation)
-* [Configuration ](#configuration )
-* [Supported Environments](#supported-environments)
-* [Sample Code](#Sample-Code)
-* [License](#license)
+- [HmsAnalyticsKitDemo](#hmsanalyticskitdemo)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Supported Environments](#supported-environments)
+- [Sample Code](#sample-code)
+- [License](#license)
 
 
 ## Introduction
@@ -28,7 +30,7 @@
     2. A Huawei phone, which is used to debug the developed app
     
     Software requirements:
-    1. HUAWEI Analytics Kit 4.0.2
+    1. HUAWEI Analytics Kit 4.0.3
     2. Android SDK applicable to devices using Android 4.2 Jelly Bean (API level 17) and later versions
     3. Android Studio 
     4. Java JDK 1.7 (JDK 1.8 is recommended.)
@@ -36,13 +38,13 @@
 ## Sample Code
 After running the app you should see a screen like this:
 
-<img src="app/src/screen_0.PNG" height="534" width="300" style="max-width:100%;">
+<img src="app/src/screen_0.png" height="534" width="300" style="max-width:100%;">
 
 Click the button TRUE or FALSE to answer the question; Click the NEXT, show the next question; Click POST SCORE, log the score user got. All the infomations will be upload to Hianalytics Console, and you can see these infomations in real time using Debug View.
 
 Click button SETTINGS:
 
-<img src="app/src/screen_1.PNG" height="534" width="300" style="max-width:100%;">
+<img src="app/src/screen_1.png" height="534" width="300" style="max-width:100%;">
 
 You will be asked what your favorite sport is. This choice will be logged to Hianalytics as a User Property.
 
