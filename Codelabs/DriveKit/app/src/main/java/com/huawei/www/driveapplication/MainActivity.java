@@ -1,17 +1,17 @@
 /**
- *  Copyright 2020. Huawei Technologies Co., Ltd. All rights reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright 2020. Huawei Technologies Co., Ltd. All rights reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.huawei.www.driveapplication;
@@ -34,8 +34,12 @@ import com.huawei.cloud.base.util.StringUtils;
 import com.huawei.cloud.client.exception.DriveCode;
 import com.huawei.cloud.services.drive.Drive;
 import com.huawei.cloud.services.drive.DriveScopes;
+import com.huawei.cloud.services.drive.model.Comment;
+import com.huawei.cloud.services.drive.model.CommentList;
 import com.huawei.cloud.services.drive.model.File;
 import com.huawei.cloud.services.drive.model.FileList;
+import com.huawei.cloud.services.drive.model.Reply;
+import com.huawei.cloud.services.drive.model.ReplyList;
 import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.common.ApiException;
 import com.huawei.hms.support.api.entity.auth.Scope;
@@ -72,10 +76,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String unionId;
 
     private File directoryCreated;
+    private File fileUploaded;
     private File fileSearched;
+    private Comment mComment;
+    private Reply mReply;
+
     private EditText uploadFileName;
     private EditText searchFileName;
+    private EditText commentText;
+    private EditText replyText;
     private TextView queryResult;
+    private TextView commentList;
+    private TextView replyList;
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -96,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private DriveCredential.AccessMethod refreshAT = new DriveCredential.AccessMethod() {
+        // 此处做简单处理，正式使用请参考华为云空间服务开发者指南-客户端开发-存储鉴权信息章节
         @Override
         public String refreshToken() {
             return accessToken;
@@ -115,10 +128,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         uploadFileName = findViewById(R.id.uploadFileName);
         searchFileName = findViewById(R.id.searchFileName);
         queryResult = findViewById(R.id.queryResult);
+        commentList = findViewById(R.id.commentList);
+        replyList = findViewById(R.id.replyList);
+        commentText = findViewById(R.id.commentText);
+        replyText = findViewById(R.id.replyText);
         findViewById(R.id.buttonLogin).setOnClickListener(this);
         findViewById(R.id.buttonUploadFiles).setOnClickListener(this);
         findViewById(R.id.buttonQueryFiles).setOnClickListener(this);
         findViewById(R.id.buttonDownloadFiles).setOnClickListener(this);
+        findViewById(R.id.buttonCreateComment).setOnClickListener(this);
+        findViewById(R.id.buttonQueryComment).setOnClickListener(this);
+        findViewById(R.id.buttonCreateReply).setOnClickListener(this);
+        findViewById(R.id.buttonQueryReply).setOnClickListener(this);
     }
 
     @Override
@@ -130,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "onActivityResult, requestCode = " + requestCode + ", resultCode = " + resultCode);
         if (requestCode == REQUEST_SIGN_IN_LOGIN) {
             Task<AuthHuaweiId> authHuaweiIdTask = HuaweiIdAuthManager.parseAuthResultFromIntent(data);
@@ -178,6 +198,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.buttonDownloadFiles:
                 downloadFiles();
+                break;
+            case R.id.buttonCreateComment:
+                createComment();
+                break;
+            case R.id.buttonQueryComment:
+                queryComment();
+                break;
+            case R.id.buttonCreateReply:
+                createReply();
+                break;
+            case R.id.buttonQueryReply:
+                queryReply();
                 break;
             default:
                 break;
@@ -232,12 +264,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setAppSettings(appProperties);
                     directoryCreated = drive.files().create(file).execute();
                     // create test.jpg on cloud
+                    String mimeType = mimeType(fileObject);
                     File content = new File()
                             .setFileName(fileObject.getName())
-                            .setMimeType(mimeType(fileObject))
+                            .setMimeType(mimeType)
                             .setParentFolder(Collections.singletonList(directoryCreated.getId()));
-                    drive.files()
-                            .create(content, new FileContent("image/jpeg", fileObject))
+                    fileUploaded = drive.files()
+                            .create(content, new FileContent(mimeType, fileObject))
                             .setFields("*")
                             .execute();
                     showTips("upload success");
@@ -335,6 +368,162 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
+    private void createComment() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (accessToken == null) {
+                        showTips("please click 'Login'.");
+                        return;
+                    }
+                    if (fileSearched == null) {
+                        showTips("please click 'QUERY FILE'.");
+                        return;
+                    }
+                    if (StringUtils.isNullOrEmpty(commentText.getText().toString())) {
+                        showTips("please input comment above.");
+                        return;
+                    }
+                    Drive drive = buildDrive();
+                    Comment comment = new Comment();
+                    comment.setDescription(commentText.getText().toString());
+                    mComment = drive.comments()
+                            .create(fileSearched.getId(), comment)
+                            .setFields("*")
+                            .execute();
+
+                    if (mComment != null && mComment.getId() != null) {
+                        Log.i(TAG, "Add comment success");
+                        showTips("Add comment success");
+                    } else {
+                        Log.e(TAG, "Add comment failed");
+                        showTips("Add comment failed");
+                    }
+                } catch (Exception ex) {
+                    Log.d(TAG, "Add comment", ex);
+                    showTips("Add comment error");
+                }
+            }
+        }).start();
+    }
+
+    private void queryComment() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (accessToken == null) {
+                        showTips("please click 'Login'.");
+                        return;
+                    }
+                    if (fileSearched == null) {
+                        showTips("please click 'QUERY FILE'.");
+                        return;
+                    }
+                    Drive drive = buildDrive();
+                    CommentList response = drive.comments()
+                            .list(fileSearched.getId())
+                            .setFields("comments/id,comments/description,comments/replies/description")
+                            .execute();
+
+                    final String text = response.getComments().toString();
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            commentList.setText(text);
+                        }
+                    });
+                } catch (Exception ex) {
+                    Log.d(TAG, "query comment", ex);
+                    showTips("query comment error");
+                }
+            }
+        }).start();
+    }
+
+    private void createReply() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (accessToken == null) {
+                        showTips("please click 'Login'.");
+                        return;
+                    }
+                    if (fileSearched == null) {
+                        showTips("please click 'QUERY FILE'.");
+                        return;
+                    }
+                    if (mComment == null) {
+                        showTips("please click 'COMMENT THE FILE'.");
+                        return;
+                    }
+                    if (StringUtils.isNullOrEmpty(replyText.getText().toString())) {
+                        showTips("please input comment above.");
+                        return;
+                    }
+                    Drive drive = buildDrive();
+                    Reply reply = new Reply();
+                    reply.setDescription(replyText.getText().toString());
+                    mReply = drive.replies()
+                            .create(fileSearched.getId(), mComment.getId(), reply)
+                            .setFields("*")
+                            .execute();
+
+                    if (mReply != null && mReply.getId() != null) {
+                        Log.i(TAG, "Add reply success");
+                        showTips("Add reply success");
+                    } else {
+                        Log.e(TAG, "Add reply failed");
+                        showTips("Add reply failed");
+                    }
+                } catch (Exception ex) {
+                    Log.d(TAG, "Add reply", ex);
+                    showTips("Add reply error");
+                }
+            }
+        }).start();
+    }
+
+    private void queryReply() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (accessToken == null) {
+                        showTips("please click 'Login'.");
+                        return;
+                    }
+                    if (fileSearched == null) {
+                        showTips("please click 'QUERY FILE'.");
+                        return;
+                    }
+                    if (mComment == null) {
+                        showTips("please click 'COMMENT THE FILE'.");
+                        return;
+                    }
+                    Drive drive = buildDrive();
+                    ReplyList response = drive.replies()
+                            .list(fileSearched.getId(), mComment.getId())
+                            .setFields("replies/id,replies/description")
+                            .execute();
+
+                    final String text = response.getReplies().toString();
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            replyList.setText(text);
+                        }
+                    });
+                } catch (Exception ex) {
+                    Log.d(TAG, "query reply", ex);
+                    showTips("query reply error");
+                }
+            }
+        }).start();
+    }
+
     private Drive buildDrive() {
         Drive service = new Drive.Builder(mCredential, this).build();
         return service;
@@ -351,6 +540,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return "*/*";
     }
 
+    /**
+     * 通过上下文context和华为账号信息（unionId，countrycode，accessToken）初始化drive。
+     * 当accessToken失效时，注册一个AccessMethod去获取一个新的accessToken。
+     *
+     * @param unionID   unionID from HwID
+     * @param at        access token
+     * @param refreshAT a callback to refresh AT
+     */
     public int init(String unionID, String at, DriveCredential.AccessMethod refreshAT) {
         if (StringUtils.isNullOrEmpty(unionID) || StringUtils.isNullOrEmpty(at)) {
             return DriveCode.ERROR;
@@ -359,5 +556,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mCredential = builder.build().setAccessToken(at);
         return DriveCode.SUCCESS;
     }
-
 }

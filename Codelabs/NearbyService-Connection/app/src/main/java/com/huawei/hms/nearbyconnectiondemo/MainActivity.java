@@ -63,7 +63,7 @@ import java.util.List;
  * @since 2020-01-13
  */
 public class MainActivity extends AppCompatActivity implements PermissionInterface, View.OnClickListener {
-    private static final int TIMEOUT_MILLISECONDS = 5000;
+    private static final int TIMEOUT_MILLISECONDS = 10000;
     private static final String TAG = "Nearby Connection Demo";
 
     private TransferEngine mTransferEngine = null;
