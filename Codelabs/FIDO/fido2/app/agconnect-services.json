@@ -1,0 +1,12 @@
+{
+	"client":{
+		"cp_id":"260086000000043952",
+		"product_id":"9105385871708571788",
+		"client_id":"321570638315652096",
+		"client_secret":"31C5DE2662777DE33A418F5A6855265E65F8A7CCC092F22F81ABBAA9BD91C7AF",
+		"app_id":"101894033",
+		"package_name":"com.huawei.hms.fido.sample.fido2",
+		"api_key":"CV6auQ0FJJSgASzYot1RopH3t70aNADbRsy+YpjxZCjVmznVySpzJKR5kJCx0nJh+VSEEgAcOusb476+ctnIKJnOZEBQ"
+	},
+	"configuration_version":"1.0"
+}
