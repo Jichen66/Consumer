@@ -29,7 +29,7 @@
 
     SplashActivity.java
     Loads and displays splash ads.
-    Code location：SplashAdExample\app\src\main\java\com\example\splashadexample\SplashActivity.java
+    Code location:SplashAdExample\app\src\main\java\com\example\splashadexample\SplashActivity.java
 
 ##  License
     SplashAdExample is licensed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).

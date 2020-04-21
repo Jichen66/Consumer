@@ -3,14 +3,12 @@
 
 ## Table of Contents
 
-- [HmsAnalyticsKitDemo](#hmsanalyticskitdemo)
-- [Table of Contents](#table-of-contents)
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Supported Environments](#supported-environments)
-- [Sample Code](#sample-code)
-- [License](#license)
+* [Introduction](#introduction)
+* [Installation](#installation)
+* [Configuration ](#configuration )
+* [Supported Environments](#supported-environments)
+* [Sample Code](# Sample Code)
+* [License](#license)
 
 
 ## Introduction
@@ -43,7 +41,6 @@ After running the app you should see a screen like this:
 Click the button TRUE or FALSE to answer the question; Click the NEXT, show the next question; Click POST SCORE, log the score user got. All the infomations will be upload to Hianalytics Console, and you can see these infomations in real time using Debug View.
 
 Click button SETTINGS:
-
 <img src="app/src/screen_1.png" height="534" width="300" style="max-width:100%;">
 
 You will be asked what your favorite sport is. This choice will be logged to Hianalytics as a User Property.

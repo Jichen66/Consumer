@@ -29,7 +29,7 @@
 
     MainActivity.java
     Loads and displays banner ads.
-    Code location：BannerExample\app\src\main\java\com\example\bannerexample\MainActivity.java
+    Code location:BannerExample\app\src\main\java\com\example\bannerexample\MainActivity.java
 
 ##  License
     BannerExample is licensed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).

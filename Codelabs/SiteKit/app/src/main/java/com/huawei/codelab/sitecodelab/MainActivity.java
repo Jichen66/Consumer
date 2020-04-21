@@ -16,12 +16,6 @@
 
 package com.huawei.codelab.sitecodelab;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-
 import com.huawei.hms.site.api.SearchResultListener;
 import com.huawei.hms.site.api.SearchService;
 import com.huawei.hms.site.api.SearchServiceFactory;
@@ -30,6 +24,12 @@ import com.huawei.hms.site.api.model.SearchStatus;
 import com.huawei.hms.site.api.model.Site;
 import com.huawei.hms.site.api.model.TextSearchRequest;
 import com.huawei.hms.site.api.model.TextSearchResponse;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private SearchService searchService;
+
     TextView resultTextView;
+
     EditText queryInput;
 
     @Override
@@ -51,15 +53,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        searchService = SearchServiceFactory.create(this);
+        // Please replace "API key" with your API KEY
+        searchService = SearchServiceFactory.create(this, "API key");
 
         queryInput = findViewById(R.id.edit_text_text_search_query);
         resultTextView = findViewById(R.id.response_text_search);
 
-
     }
 
-    public void search(View view){
+    public void search(View view) {
         TextSearchRequest textSearchRequest = new TextSearchRequest();
         textSearchRequest.setQuery(queryInput.getText().toString());
         searchService.textSearch(textSearchRequest, new SearchResultListener<TextSearchResponse>() {
@@ -70,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
                 response.append("success\n");
                 int count = 1;
                 AddressDetail addressDetail;
-                for (Site site :textSearchResponse.getSites()){
+                for (Site site : textSearchResponse.getSites()) {
                     addressDetail = site.getAddress();
-                    response.append(String.format(
-                            "[%s]  name: %s, formatAddress: %s, country: %s, countryCode: %s \r\n",
-                            "" + (count++),  site.getName(), site.getFormatAddress(),
+                    response
+                        .append(String.format("[%s]  name: %s, formatAddress: %s, country: %s, countryCode: %s \r\n",
+                            "" + (count++), site.getName(), site.getFormatAddress(),
                             (addressDetail == null ? "" : addressDetail.getCountry()),
                             (addressDetail == null ? "" : addressDetail.getCountryCode())));
                 }
