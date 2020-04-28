@@ -36,12 +36,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView txt_sysintegrity;
     private TextView txt_urlcheck;
     private TextView txt_userdetect;
+    private TextView txt_wifidetect;
 
     // Fragment Object
     private Fragment fg1;
     private Fragment fg2;
     private Fragment fg3;
     private Fragment fg4;
+    private Fragment fg5;
     private FragmentManager fManager;
 
     @Override
@@ -60,11 +62,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         txt_sysintegrity = findViewById(R.id.txt_sysintegrity);
         txt_urlcheck = findViewById(R.id.txt_urlcheck);
         txt_userdetect = findViewById(R.id.txt_userdetect);
+        txt_wifidetect = findViewById(R.id.txt_wifidetect);
 
         txt_appscheck.setOnClickListener(this);
         txt_sysintegrity.setOnClickListener(this);
         txt_urlcheck.setOnClickListener(this);
         txt_userdetect.setOnClickListener(this);
+        txt_wifidetect.setOnClickListener(this);
     }
 
     @Override
@@ -112,6 +116,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
             } else {
                 fTransaction.show(fg4);
             }
+        }else if (id == R.id.txt_wifidetect){
+            setSelected();
+            txt_wifidetect.setSelected(true);
+            txt_topbar.setText(R.string.title_wifi_detect_entry);
+            if (fg5 == null){
+                fg5 = new SafetyDetectWifiDetectAPIFragment();
+                fTransaction.add(R.id.ly_content,fg5);
+            }else{
+                fTransaction.show(fg5);
+            }
+
         }
         fTransaction.commit();
     }
@@ -121,6 +136,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         txt_sysintegrity.setSelected(false);
         txt_urlcheck.setSelected(false);
         txt_userdetect.setSelected(false);
+        txt_wifidetect.setSelected(false);
     }
 
     private void hideAllFragment(android.app.FragmentTransaction fragmentTransaction) {
@@ -135,6 +151,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         if (fg4 != null) {
             fragmentTransaction.hide(fg4);
+        }
+        if (fg5 != null) {
+            fragmentTransaction.hide(fg5);
         }
     }
 }

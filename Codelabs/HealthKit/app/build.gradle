@@ -14,21 +14,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // TODO: signingConfigs
-    //signingConfigs {
-    //    debug {
-    //        storeFile file('health_keystore/happysport.jks')
-    //        keyAlias 'key0'
-    //        storePassword 'android'
-    //        keyPassword 'android'
-    //    }
-    //    release {
-    //        storeFile file('health_keystore/happysport.jks')
-    //        keyAlias 'key0'
-    //        storePassword 'android'
-    //        keyPassword 'android'
-    //    }
-    //}
 
     buildTypes {
         release {

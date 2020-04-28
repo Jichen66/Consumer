@@ -4,10 +4,10 @@ apply plugin: 'com.huawei.agconnect'
 android {
     signingConfigs {
         release {
-            storeFile file('FIDO BioAuthn Android Sample.jks')
-            keyAlias 'FIDO BioAuthn Android Sample'
-            keyPassword '123456'
-            storePassword '123456'
+            storeFile file('xxx.xxx')
+            keyAlias 'xxx'
+            keyPassword 'xxx'
+            storePassword 'xxx'
         }
     }
     compileSdkVersion 29

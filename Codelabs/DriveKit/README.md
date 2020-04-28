@@ -4,6 +4,7 @@
 ## Table of Contents
 
  * [Introduction](#introduction)
+ * [Getting Started](#Getting-Started)
  * [Installation](#installation)
  * [Configuration ](#configuration )
  * [Supported Environments](#supported-environments)
@@ -15,6 +16,15 @@
     This sample code encapsulates APIs of the HUAWEI Drive Kit SDK. It provides many sample programs for your reference or usage.
     The following describes packages of Java sample code.
     app:       Sample code packages. Each package can run independently.
+
+## Getting Started
+
+    1. Register as a developer.
+    Register a [HUAWEI account](https://developer.huawei.com/consumer/en/).
+    2. Create an app.
+    Create an app and enable APIs.
+    3. Build the demo.
+    To build this demo, please first import the demo to Android Studio (3.X or later). Then download the agconnect-services.json file of the app from AppGallery Connect, and add the file to the app directory (\app) of the demo. For details, please refer to [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html)
 
 ## Installation
     Before using HUAWEI Drive Kit SDK codelab code, check whether the JAVA environment has been installed.

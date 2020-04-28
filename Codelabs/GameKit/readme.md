@@ -3,18 +3,26 @@
 
 ## Table of Contents
 
-- [GameKitDemo](#gamekitdemo)
-- [Table of Contents](#table-of-contents)
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Supported Environments](#supported-environments)
-- [Sample-Code](#sample-code)
-- [License](#license)
+* [Introduction](#introduction)
+* [Getting Started](#Getting-Started)
+* [Installation](#installation)
+* [Supported Environments](#supported-environments)
+* [Sample Code](#Sample-Code)
+* [License](#license)
 
 
 ## Introduction
     Game Kit provides refined scene information, configuration information, network information, etc. to the system through the Game App, and the system feeds back system status information to the Game App,
 	so Game and system could use this information for closer and deeper collaboration, in the case of limited system resources To further improve the player's gaming experience.
+
+## Getting Started
+
+    1. Register as a developer.
+    Register a [HUAWEI account](https://developer.huawei.com/consumer/en/).
+    2. Create an app.
+    Create an app and enable APIs.
+    3. Build the demo.
+    To build this demo, please first import the demo to Android Studio (3.X or later). Then download the agconnect-services.json file of the app from AppGallery Connect, and add the file to the app directory (\app) of the demo. For details, please refer to [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html)
 
 ## Installation
     Use DevEco Studio or Android Studio to open the decompressed project.
@@ -35,9 +43,10 @@
 
 ## Sample-Code
 After running the app you should see a screen like this:
+<img src="assets/GameKit-2020-03-06-01.png" height="534" width="300" style="max-width:100%;">
+<img src="assets/GameKit-2020-03-06-02.png" height="534" width="300" style="max-width:100%;">
 
-<img src="gamekitdemo\src\main\asset\GameKit-2020-03-06-01.png" height="534" width="300" style="max-width:100%;">
-<img src="gamekitdemo\src\main\asset\GameKit-2020-03-06-02.png" height="534" width="300" style="max-width:100%;">
+
 
 ##  License
     GameKitDemo is licensed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).

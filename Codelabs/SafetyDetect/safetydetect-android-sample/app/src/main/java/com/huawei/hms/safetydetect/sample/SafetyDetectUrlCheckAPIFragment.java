@@ -125,7 +125,7 @@ public class SafetyDetectUrlCheckAPIFragment extends Fragment
                     /**
                      * Called after successfully communicating with the SafetyDetect API.
                      * The #onSuccess callback receives an
-                     * {@link com.huawei.hms.support.api.entity.safetydetect.UrlCheckResponse} that contains a
+                     * {@link UrlCheckResponse} that contains a
                      * list of UrlCheckThreat that contains the threat type of the Url.
                      */
                     @Override

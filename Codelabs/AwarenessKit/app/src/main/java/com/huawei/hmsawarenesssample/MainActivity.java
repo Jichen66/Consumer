@@ -36,7 +36,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int PERMISSION_REQUEST_CODE = 940;
-    private final String[] permissions = new String[] {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACTIVITY_RECOGNITION};
+    private final String[] mPermissionsOnHigherVersion = new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACTIVITY_RECOGNITION};
+    private final String[] mPermissionsOnLowerVersion = new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
+            "com.huawei.hms.permission.ACTIVITY_RECOGNITION"};
     private List<String> mPermissionsDoNotGrant = new ArrayList<>();
 
     @Override
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void checkAndRequestPermissions() {
         mPermissionsDoNotGrant.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            for (String permission : permissions) {
+            for (String permission : mPermissionsOnHigherVersion) {
                 if (ActivityCompat.checkSelfPermission(this, permission)
                         != PackageManager.PERMISSION_GRANTED) {
                     mPermissionsDoNotGrant.add(permission);
@@ -59,9 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else {
-            if (ActivityCompat.checkSelfPermission(this, permissions[0])
-                    != PackageManager.PERMISSION_GRANTED) {
-                mPermissionsDoNotGrant.add(permissions[0]);
+            for (String permission : mPermissionsOnLowerVersion) {
+                if (ActivityCompat.checkSelfPermission(this, permission)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    mPermissionsDoNotGrant.add(permission);
+                }
             }
         }
 
@@ -79,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(snapshotIntent);
                 break;
             case R.id.awareness_barrier:
-                Intent fenceIntent = new Intent(this, BarrierActivity.class);
-                startActivity(fenceIntent);
+                Intent barrierIntent = new Intent(this, BarrierActivity.class);
+                startActivity(barrierIntent);
                 break;
             default:
                 break;

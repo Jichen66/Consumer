@@ -30,6 +30,7 @@ import com.huawei.hmf.tasks.OnSuccessListener;
 import com.huawei.hms.common.ApiException;
 import com.huawei.hms.support.api.entity.safetydetect.UserDetectResponse;
 import com.huawei.hms.support.api.safetydetect.SafetyDetect;
+import com.huawei.hms.support.api.safetydetect.SafetyDetectClient;
 import com.huawei.hms.support.api.safetydetect.SafetyDetectStatusCodes;
 
 import org.json.JSONObject;
@@ -53,6 +54,26 @@ public class SafetyDetectUserDetectAPIFragment extends Fragment implements View.
 
     private static final int APP_ID = 101324691;
 
+    private SafetyDetectClient client;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        client = SafetyDetect.getClient(getActivity());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        client.initUserDetect();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        client.shutdownUserDetect();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fg_userdetect, container, false);
@@ -73,13 +94,12 @@ public class SafetyDetectUserDetectAPIFragment extends Fragment implements View.
 
     private void detect() {
         Log.i(TAG, "User detection start.");
-        SafetyDetect.getClient(getActivity())
-                .userDetection(String.valueOf(APP_ID))
+        client.userDetection(String.valueOf(APP_ID))
                 .addOnSuccessListener(new OnSuccessListener<UserDetectResponse>() {
                     /**
                      * Called after successfully communicating with the SafetyDetect API.
                      * The #onSuccess callback receives an
-                     * {@link com.huawei.hms.support.api.entity.safetydetect.UserDetectResponse} that contains a
+                     * {@link UserDetectResponse} that contains a
                      * responseToken that can be used to get user detect result.
                      */
                     @Override
@@ -94,7 +114,7 @@ public class SafetyDetectUserDetectAPIFragment extends Fragment implements View.
                                     .show();
                         } else {
                             Toast.makeText(getActivity().getApplicationContext(),
-                                    "User detection succeed but verify fail",
+                                    "User detection succeed but verify fail, please replace verify url with your's server address",
                                     Toast.LENGTH_SHORT)
                                     .show();
                         }
@@ -122,7 +142,7 @@ public class SafetyDetectUserDetectAPIFragment extends Fragment implements View.
     }
 
     /**
-     * Send responseToken to your server to get the result of use detect.
+     * Send responseToken to your server to get the result of user detect.
      */
     private static boolean verify(final String responseToken) {
         try {

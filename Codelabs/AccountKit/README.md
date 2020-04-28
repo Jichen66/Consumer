@@ -4,10 +4,11 @@
 ## Table of Contents
 
  * [Introduction](#introduction)
+ * [Getting Started](#Getting-Started)
  * [Installation](#installation)
  * [Configuration ](#configuration )
  * [Supported Environments](#supported-environments)
- * [Sample Code](# Sample Code)
+ * [Sample Code](#Sample-Code)
  * [License](#license)
  
  
@@ -17,8 +18,15 @@
 
     hmssample: Sample code packages. This package  contains code that implements Sign,  SignInCode and SignOut.
     logger: This packages contains code that implements logger View.
-    
 
+## Getting Started
+
+    1. Register as a developer.
+    Register a [HUAWEI account](https://developer.huawei.com/consumer/en/).
+    2. Create an app.
+    Create an app and enable APIs.
+    3. Build the demo.
+    To build this demo, please first import the demo to Android Studio (3.X or later). Then download the agconnect-services.json file of the app from AppGallery Connect, and add the file to the app directory (\app) of the demo. For details, please refer to [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html)
 ## Installation
     To use functions provided by examples, please make sure Huawei Mobile Service 4.0 has been installed on your cellphone.
 ## Supported Environments

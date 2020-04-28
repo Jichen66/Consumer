@@ -10,6 +10,7 @@ Documentation can be found at this
 - [Huawei In-App Purchases Demo](#huawei-in-app-purchases-demo)
   - [Table of Content](#table-of-content)
   - [Introduction](#introduction)
+  - [Getting Started](#Getting-Started)
   - [Environment requirement](#environment-requirement)
     - [Hardware Requirements](#hardware-Requirements)
     - [Software Requirements](#software-Requirements)
@@ -30,6 +31,16 @@ auto-renewable subscription.
 * Auto-renewable subscription : Once purchased, Users can access to value-added functions or content in a specified period of time. The subscriptions will automatically renew on a recurring basis until users decide to cancel.
 
 This project implements the purchase process of consumable products, helping developers learn more about Huawei In-App Purchases.
+
+## Getting Started
+
+    1. Register as a developer.
+    Register a [HUAWEI account](https://developer.huawei.com/consumer/en/).
+    2. Create an app.
+    Create an app and enable APIs.
+    3. Build the demo.
+    To build this demo, please first import the demo to Android Studio (3.X or later). Then download the agconnect-services.json file of the app from AppGallery Connect, and add the file to the app directory (\app) of the demo. For details, please refer to [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html)
+
 
 ## Environment requirement
 

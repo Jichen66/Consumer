@@ -18,10 +18,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('../lightregion.jks')
-            keyAlias 'huawei'
-            keyPassword '123456aA'
-            storePassword '123456aA'
+            storeFile file('xxx.xxx')
+            keyAlias 'xxx'
+            keyPassword 'xxx'
+            storePassword 'xxx'
         }
 
     }

@@ -4,10 +4,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("lightregion.jks")
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-            storePassword 'android'
+            storeFile file("xxx.jks")
+            keyAlias 'xxx'
+            keyPassword 'xxx'
+            storePassword 'xxx'
         }
     }
 

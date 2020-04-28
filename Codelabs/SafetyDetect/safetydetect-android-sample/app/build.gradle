@@ -8,14 +8,14 @@ configurations.all {
 android {
     signingConfigs {
         config {
-            storeFile file('SafetyDetectSample.jks')
-            keyAlias = 'SafetyDetectSample'
-            storePassword '123456'
-            keyPassword '123456'
+            storeFile file('xxx.xxx')
+            keyAlias = 'xxx'
+            storePassword 'xxx'
+            keyPassword 'xxx'
         }
     }
-    compileSdkVersion 29
-    buildToolsVersion "29.0.1"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.huawei.hms.safetydetect.sample"
         minSdkVersion 19
@@ -34,6 +34,11 @@ android {
             signingConfig signingConfigs.config
         }
     }
+	android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "SafetyDetectSampleAllInOne-${variant.buildType.name}" + '.apk'
+        }
+    }
 }
 
 dependencies {
@@ -45,5 +50,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //safetydetect sdk
-    implementation 'com.huawei.hms:safetydetect:4.0.0.300'
+    implementation 'com.huawei.hms:safetydetect:4.0.3.300'
 }

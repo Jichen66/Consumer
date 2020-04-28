@@ -4,6 +4,7 @@
 ## Table of Contents
 
 * [Introduction](#introduction)
+* [Getting Started](#Getting-Started)
 * [Installation](#installation)
 * [Configuration ](#configuration )
 * [Supported Environments](#supported-environments)
@@ -14,6 +15,15 @@
 ## Introduction
     HmsAnalyticsKitDemo is a app that applying HUAWEI Hianalytics SDK used for showing how to collect user engagement and user preference.
 [Read more about Hianalytics](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/3021001).
+
+## Getting Started
+
+    1. Register as a developer.
+    Register a [HUAWEI account](https://developer.huawei.com/consumer/en/).
+    2. Create an app.
+    Create an app and enable APIs.
+    3. Build the demo.
+    To build this demo, please first import the demo to Android Studio (3.X or later). Then download the agconnect-services.json file of the app from AppGallery Connect, and add the file to the app directory (\app) of the demo. For details, please refer to [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html)
 
 ## Installation
     Use Android Studio to open the decompressed project.

@@ -81,7 +81,7 @@ public class SafetyDetectAppsCheckAPIFragment extends Fragment implements View.O
      * isVerifyAppsCheck() shows whether app verification is enabled
      */
     private void verifyAppsCheckEnabled() {
-        SafetyDetect.getClient(getActivity().getApplicationContext())
+        SafetyDetect.getClient(getActivity())
                 .isVerifyAppsCheck()
                 .addOnSuccessListener(new OnSuccessListener<VerifyAppsCheckEnabledResp>() {
                     @Override
@@ -120,7 +120,7 @@ public class SafetyDetectAppsCheckAPIFragment extends Fragment implements View.O
      * enableAppsCheck()  enable appsCheck
      */
     private void enableAppsCheck() {
-        SafetyDetect.getClient(getActivity().getApplicationContext())
+        SafetyDetect.getClient(getActivity())
                 .enableAppsCheck()
                 .addOnSuccessListener(new OnSuccessListener<VerifyAppsCheckEnabledResp>() {
                     @Override

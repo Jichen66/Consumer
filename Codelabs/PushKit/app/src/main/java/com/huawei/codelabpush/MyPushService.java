@@ -12,9 +12,11 @@ public class MyPushService extends HmsMessageService {
     public void onNewToken(String s) {
         super.onNewToken(s);
         Log.i(TAG, "receive token:" + s);
-
     }
-
+    @Override
+    public void onTokenError(Exception e) {
+        super.onTokenError(e);
+    }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
