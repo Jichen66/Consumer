@@ -4,7 +4,7 @@
 ## Table of Contents
 
  * [Introduction](#introduction)
- * [Getting Started](#Getting-Started) 
+ * [Getting Started](#Getting-Started)
  * [Installation](#installation)
  * [Configuration ](#configuration )
  * [Supported Environments](#supported-environments)
@@ -35,7 +35,9 @@
 	Java 1.7 or a later version is recommended.
 
 ## Configuration 
-    No additional configuration is required.
+    You should create an app in AppGallery Connect, and obtain the file of agconnect-services.json and add to the project.
+    You should also generate a signing certificate fingerprint and add the certificate file to the project, and add configuration to build.gradle.
+    https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/SafetyDetectDevelopment
 
 ## Sample Code
     More API information please visit 

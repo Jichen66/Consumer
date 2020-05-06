@@ -8,10 +8,10 @@ configurations.all {
 android {
     signingConfigs {
         config {
-            storeFile file('xxxx.xxx')
-            keyAlias = 'xxx'
-            storePassword 'xxx'
-            keyPassword 'xxx'
+            storeFile file('XXXXXXX')
+            keyAlias = 'XXXXXXX'
+            storePassword 'XXXXXX'
+            keyPassword 'XXXXXX'
         }
     }
     compileSdkVersion 28

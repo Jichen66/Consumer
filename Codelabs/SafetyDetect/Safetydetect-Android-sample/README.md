@@ -15,7 +15,7 @@
 ## Introduction
     SafetyDetect Sample provides many sample programs for your reference or usage.
     The following describes packages of SafetyDetect sample code.
-    
+
     sample:Sample code packages.
 	
 ## Getting Started
@@ -25,7 +25,7 @@
     2. Create an app.
     Create an app and enable APIs.
     3. Build the demo.
-    To build this demo, please first import the demo to Android Studio (3.X or later). Then download the agconnect-services.json file of the app from AppGallery Connect, and add the file to the app directory (\app) of the demo. For details, please refer to [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html)	
+    To build this demo, please first import the demo to Android Studio (3.X or later). Then download the agconnect-services.json file of the app from AppGallery Connect, and add the file to the app directory (\app) of the demo. For details, please refer to [Preparations for Integrating HUAWEI HMS Core](https://developer.huawei.com/consumer/en/codelab/HMSPreparation/index.html)
 
 ## Installation
     Before using SafetyDetect Sample code, check whether java environment and Android Studio has been installed.
@@ -35,10 +35,12 @@
 	Java 1.7 or a later version is recommended.
 
 ## Configuration
-    No additional configuration is required.
+    You should create an app in AppGallery Connect, and obtain the file of agconnect-services.json and add to the project.
+    You should also generate a signing certificate fingerprint and add the certificate file to the project, and add configuration to build.gradle.
+    https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/SafetyDetectDevelopment
 
 ## Sample Code
-    More API information please visit 
+    More API information please visit
     https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/21589964
 
 ##  License
