@@ -9,27 +9,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill"
-        android:text="注册(有Callback接口)" />
+        android:text="Register" />
 
     <Button
         android:id="@+id/register_sdk_without_callback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill"
-        android:text="注册(无Callback接口)" />
+        android:text="Register(no callback)" />
 
     <Button
         android:id="@+id/get_phone_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill"
-        android:text="获取系统信息" />
+        android:text="Get phone info" />
 
     <Button
         android:id="@+id/send_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill"
-        android:text="发送游戏信息" />
+        android:text="Send data" />
 
 </LinearLayout>

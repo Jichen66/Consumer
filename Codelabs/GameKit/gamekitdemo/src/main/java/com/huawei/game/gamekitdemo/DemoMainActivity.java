@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
  */
 
 package com.huawei.game.gamekitdemo;
