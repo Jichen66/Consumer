@@ -15,19 +15,24 @@
  *
  */
 
-package com.huawei.hmsawarenesssample.logger;
+package com.huawei.hms.awareness.codelab.logger;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 
 import java.util.Date;
 
+@SuppressLint("AppCompatCustomView")
 public class LogView extends TextView {
+    private final Handler mHandler = new Handler();
+
     public LogView(Context context) {
         super(context);
     }
@@ -49,7 +54,6 @@ public class LogView extends TextView {
         builder.append(msg);
         builder.append(System.lineSeparator());
 
-        ((Activity) getContext())
-                .runOnUiThread(new Thread(()-> append("\n" + builder.toString())));
+        mHandler.post(() -> append("\n" + builder.toString()));
     }
 }

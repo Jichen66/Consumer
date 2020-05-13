@@ -16,24 +16,43 @@
         android:text="@string/awareness_barrier_sample"
         />
     <Button
-        android:id="@+id/add_barrier"
+        android:id="@+id/headset_barrier"
         style="@style/ButtonStyle"
-        android:text="@string/awareness_addBarrier"
+        android:text="@string/awareness_headsetBarrier"
         />
     <Button
-        android:id="@+id/add_combination_barrier"
+        android:id="@+id/location_barrier"
         style="@style/ButtonStyle"
-        android:text="@string/awareness_addCombinationBarrier"/>
+        android:text="@string/awareness_locationBarrier"
+        />
     <Button
-        android:id="@+id/clear_log"
-        android:text="@string/clear_log"
-        style="@style/ButtonStyle"/>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <com.huawei.hmsawarenesssample.logger.LogView
-            android:id="@+id/logView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </ScrollView>
+        android:id="@+id/bluetooth_barrier"
+        style="@style/ButtonStyle"
+        android:text="@string/awareness_bluetoothBarrier"
+        />
+    <Button
+        android:id="@+id/behavior_barrier"
+        style="@style/ButtonStyle"
+        android:text="@string/awareness_behaviorBarrier"
+        />
+    <Button
+        android:id="@+id/time_barrier"
+        style="@style/ButtonStyle"
+        android:text="@string/awareness_timeBarrier"
+        />
+    <Button
+        android:id="@+id/ambientLight_barrier"
+        style="@style/ButtonStyle"
+        android:text="@string/awareness_ambientLightBarrier"
+        />
+    <Button
+        android:id="@+id/beacon_barrier"
+        style="@style/ButtonStyle"
+        android:text="@string/awareness_beaconBarrier"
+        />
+    <Button
+        android:id="@+id/barrier_combination"
+        style="@style/ButtonStyle"
+        android:text="@string/awareness_barrierCombination"
+        />
 </LinearLayout>
