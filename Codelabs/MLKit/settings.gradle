@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='mlkit_example'
+rootProject.name='FaceDemo'

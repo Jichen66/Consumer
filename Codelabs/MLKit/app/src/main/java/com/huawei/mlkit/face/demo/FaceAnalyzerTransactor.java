@@ -35,7 +35,8 @@ public class FaceAnalyzerTransactor implements MLAnalyzer.MLTransactor<MLFace> {
         SparseArray<MLFace> faceSparseArray = result.getAnalyseList();
         for (int i = 0; i < faceSparseArray.size(); i++) {
             // todo step 4: add on-device face graphic
-			
+            MLFaceGraphic graphic = new MLFaceGraphic(this.mGraphicOverlay, faceSparseArray.valueAt(i));
+            this.mGraphicOverlay.add(graphic);
             // finish
         }
     }

@@ -132,7 +132,12 @@ public class LiveImageDetectionActivity extends AppCompatActivity implements Com
 
     private MLFaceAnalyzer createFaceAnalyzer() {
         // todo step 2: add on-device face analyzer
-
+        MLFaceAnalyzerSetting setting = new MLFaceAnalyzerSetting.Factory()
+                .setFeatureType(MLFaceAnalyzerSetting.TYPE_FEATURES)
+                .setPerformanceType(MLFaceAnalyzerSetting.TYPE_SPEED)
+                .allowTracing()
+                .create();
+        this.analyzer = MLAnalyzerFactory.getInstance().getFaceAnalyzer(setting);
         // finish
         this.analyzer.setTransactor(new FaceAnalyzerTransactor(this.mOverlay));
         return this.analyzer;
@@ -141,7 +146,12 @@ public class LiveImageDetectionActivity extends AppCompatActivity implements Com
     private void createLensEngine() {
         Context context = this.getApplicationContext();
         // todo step 3: add on-device lens engine
-
+        this.mLensEngine = new LensEngine.Creator(context, this.analyzer)
+                .setLensType(this.lensType)
+                .applyDisplayDimension(1600, 1024)
+                .applyFps(25.0f)
+                .enableAutomaticFocus(true)
+                .create();
         // finish
     }
 
