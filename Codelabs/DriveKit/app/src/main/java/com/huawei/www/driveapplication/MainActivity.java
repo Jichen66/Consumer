@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static int REQUEST_SIGN_IN_LOGIN = 1002;
 
     private DriveCredential mCredential;
-
+    // huawei account AT
     private String accessToken;
 
     private String unionId;
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .execute();
                     showTips("upload success");
                 } catch (Exception ex) {
-                    Log.d(TAG, "upload", ex);
+                    Log.d(TAG, "upload error " + ex.toString());
                     showTips("upload error " + ex.toString());
                 }
             }
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     });
                     showTips("query ok");
                 } catch (Exception ex) {
-                    Log.d(TAG, "query", ex);
+                    Log.d(TAG, "query error " + ex.toString());
                     showTips("query error " + ex.toString());
                 }
             }
@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     request.executeContentAndDownloadTo(new FileOutputStream(new java.io.File(filePath)));
                     showTips("download to " + filePath);
                 } catch (Exception ex) {
-                    Log.d(TAG, "download", ex);
+                    Log.d(TAG, "download error " + ex.toString());
                     showTips("download error " + ex.toString());
                 }
             }
@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         showTips("Add comment failed");
                     }
                 } catch (Exception ex) {
-                    Log.d(TAG, "Add comment", ex);
+                    Log.d(TAG, "Add comment error " + ex.toString());
                     showTips("Add comment error");
                 }
             }
@@ -435,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     });
                 } catch (Exception ex) {
-                    Log.d(TAG, "query comment", ex);
+                    Log.d(TAG, "query comment error " + ex.toString());
                     showTips("query comment error");
                 }
             }
@@ -479,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         showTips("Add reply failed");
                     }
                 } catch (Exception ex) {
-                    Log.d(TAG, "Add reply", ex);
+                    Log.d(TAG, "Add reply error " + ex.toString());
                     showTips("Add reply error");
                 }
             }
@@ -517,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     });
                 } catch (Exception ex) {
-                    Log.d(TAG, "query reply", ex);
+                    Log.d(TAG, "query reply error " + ex.toString());
                     showTips("query reply error");
                 }
             }

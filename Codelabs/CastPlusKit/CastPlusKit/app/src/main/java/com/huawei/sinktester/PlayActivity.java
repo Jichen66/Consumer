@@ -1,17 +1,25 @@
 package com.huawei.sinktester;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Animatable2;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.huawei.castpluskit.Constant;
@@ -21,17 +29,24 @@ public class PlayActivity extends Activity {
     private static final String TAG = "SinkTesterPlayActivity";
     private static final int INVALID_NETWORK_QUALITY = -1000;
 
-    private Drawable mDrawableNetworkWorst;
+
     private Drawable mDrawableNetworkWorse;
     private Drawable mDrawableNetworkBad;
     private Drawable mDrawableNetworkGeneral;
-    private Drawable mDrawableNetworkGood;
+    private Drawable mVectorAnimDrawableNetworkWorse;
+    private Drawable mVectorAnimDrawableNetworkGeneral;
+    private Drawable mVectorAnimDrawableNetworkBad;
+
 
     private boolean mIsFinishSelfBehavior = true;
     private ImageView mWlanImageView;
 
+    private boolean needVectorAnimShow = true;
+    private AnimatedVectorDrawable animatedImageDrawable;
+
     public static HiSightSurfaceView mHiView;
     public static volatile boolean isSurfaceReady = false;
+
 
     private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
         @Override
@@ -55,16 +70,19 @@ public class PlayActivity extends Activity {
         }
     };
 
+
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG, "Broadcast received, action: " + action);
+//            Log.d(TAG, "Broadcast received, action: " + action);
+            Log.e(TAG, "onReceive:------------- " + action);
             if (SinkTesterService.BROADCAST_ACTION_FINISH_PLAY_ACTIVITY.equals(action)) {
                 mIsFinishSelfBehavior = false;
                 finish();
             } else if (SinkTesterService.BROADCAST_ACTION_NETWORK_QUALITY.equals(action)) {
                 int networkQuality = intent.getIntExtra("networkquality", INVALID_NETWORK_QUALITY);
+                Log.e(TAG, "onReceive: " + "              ----------------" + networkQuality);
                 switch (networkQuality) {
                     case INVALID_NETWORK_QUALITY:
                         Log.e(TAG, "invalid network quality.");
@@ -72,32 +90,16 @@ public class PlayActivity extends Activity {
                     case Constant.NETWORK_QUALITY_EXCEPTION:
                         Log.d(TAG, "network exception.");
                         mWlanImageView.setVisibility(View.GONE);
-                        Toast.makeText(PlayActivity.this, "网络异常，投屏中断", Toast.LENGTH_LONG).show();
+                        networkBreakToast();
+                        //Toast.makeText(PlayActivity.this, "网络异常，投屏中断", Toast.LENGTH_LONG).show();
                         break;
                     case Constant.NETWORK_QUALITY_WORST:
-                        Log.d(TAG, "network worst.");
-                        mWlanImageView.setVisibility(View.VISIBLE);
-                        mWlanImageView.setImageDrawable(mDrawableNetworkWorst);
-                        break;
                     case Constant.NETWORK_QUALITY_WORSE:
-                        Log.d(TAG, "network worse.");
-                        mWlanImageView.setVisibility(View.VISIBLE);
-                        mWlanImageView.setImageDrawable(mDrawableNetworkWorse);
-                        break;
                     case Constant.NETWORK_QUALITY_BAD:
-                        Log.d(TAG, "network bad.");
-                        mWlanImageView.setVisibility(View.VISIBLE);
-                        mWlanImageView.setImageDrawable(mDrawableNetworkBad);
-                        break;
                     case Constant.NETWORK_QUALITY_GENERAL:
-                        Log.d(TAG, "network general.");
-                        mWlanImageView.setVisibility(View.VISIBLE);
-                        mWlanImageView.setImageDrawable(mDrawableNetworkGeneral);
-                        break;
                     case Constant.NETWORK_QUALITY_GOOD:
-                        Log.d(TAG, "network good.");
-                        mWlanImageView.setVisibility(View.VISIBLE);
-                        mWlanImageView.setImageDrawable(mDrawableNetworkGood);
+                        Log.e(TAG, "networkQuality:---->" + networkQuality);
+                        dispatchDrawableSet(networkQuality);
                         break;
                     default:
                         break;
@@ -119,14 +121,19 @@ public class PlayActivity extends Activity {
         IntentFilter broadcastFilter = new IntentFilter();
         broadcastFilter.addAction(SinkTesterService.BROADCAST_ACTION_FINISH_PLAY_ACTIVITY);
         broadcastFilter.addAction(SinkTesterService.BROADCAST_ACTION_NETWORK_QUALITY);
+
         registerReceiver(mBroadcastReceiver, broadcastFilter);
 
         mWlanImageView = findViewById(R.id.wlan_imageview);
-        mDrawableNetworkWorst = getDrawable(R.drawable.ic_wlan_worst);
-        mDrawableNetworkWorse = getDrawable(R.drawable.ic_wlan_worse);
-        mDrawableNetworkBad = getDrawable(R.drawable.ic_wlan_bad);
-        mDrawableNetworkGeneral = getDrawable(R.drawable.ic_wlan_general);
-        mDrawableNetworkGood = getDrawable(R.drawable.ic_wlan_good);
+
+        mDrawableNetworkWorse = getDrawable(R.drawable.ic_network_worse_icon);
+        mDrawableNetworkBad = getDrawable(R.drawable.ic_network_bad_icon);
+        mDrawableNetworkGeneral = getDrawable(R.drawable.ic_network_general_icon);
+
+        mVectorAnimDrawableNetworkWorse = getDrawable(R.drawable.vector_anim_worse_show);
+        mVectorAnimDrawableNetworkGeneral = getDrawable(R.drawable.vector_anim_general_show);
+        mVectorAnimDrawableNetworkBad = getDrawable(R.drawable.vector_anim_bad_show);
+
 
         mHiView = (HiSightSurfaceView) findViewById(R.id.HiSightSurfaceView);
         if (mHiView != null) {
@@ -147,6 +154,14 @@ public class PlayActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called.");
+
+        if (animatedImageDrawable != null) {
+            if (animatedImageDrawable.isRunning()) {
+                animatedImageDrawable.stop();
+                animatedImageDrawable = null;
+            }
+        }
+
         if (mIsFinishSelfBehavior) {
             Log.d(TAG, "Finish is self behavior, send broadcast to service.");
             Intent disconnectIntent = new Intent();
@@ -173,4 +188,77 @@ public class PlayActivity extends Activity {
         intent.setAction(broadcastAction);
         sendBroadcast(intent);
     }
+
+
+
+    private void dispatchDrawableSet(int networkQuality ){
+        if(networkQuality == Constant.NETWORK_QUALITY_GOOD){
+            mWlanImageView.clearAnimation();
+            mWlanImageView.setVisibility(View.GONE);
+            needVectorAnimShow = true;
+        }else {
+            mWlanImageView.setVisibility(View.VISIBLE);
+            if (needVectorAnimShow) {
+                setVectorAnimDrawable(networkQuality);
+                needVectorAnimShow = false;
+            }else {
+                setVectorDrawable(networkQuality);
+            }
+        }
+    }
+
+    private void setVectorAnimDrawable(int networkQuality) {
+        switch (networkQuality) {
+            case Constant.NETWORK_QUALITY_WORST:
+            case Constant.NETWORK_QUALITY_WORSE:
+                mWlanImageView.setImageDrawable(mVectorAnimDrawableNetworkWorse);
+                startVectorAnimator();
+                break;
+            case Constant.NETWORK_QUALITY_BAD:
+                mWlanImageView.setImageDrawable(mVectorAnimDrawableNetworkBad);
+                startVectorAnimator();
+                break;
+            case Constant.NETWORK_QUALITY_GENERAL:
+                mWlanImageView.setImageDrawable(mVectorAnimDrawableNetworkGeneral);
+                startVectorAnimator();
+            default:
+                break;
+        }
+    }
+
+    private void startVectorAnimator(){
+        animatedImageDrawable = (AnimatedVectorDrawable) mWlanImageView.getDrawable();
+        animatedImageDrawable.start();
+    }
+
+    private void setVectorDrawable(int networkQuality){
+        switch (networkQuality) {
+            case Constant.NETWORK_QUALITY_WORST:
+            case Constant.NETWORK_QUALITY_WORSE:
+                mWlanImageView.setImageDrawable(mDrawableNetworkWorse);
+                break;
+
+            case Constant.NETWORK_QUALITY_BAD:
+                mWlanImageView.setImageDrawable(mDrawableNetworkBad);
+                break;
+
+            case Constant.NETWORK_QUALITY_GENERAL:
+                mWlanImageView.setImageDrawable(mDrawableNetworkGeneral);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void networkBreakToast(){
+        ImageView imageView = new ImageView(getApplicationContext());
+        imageView.setImageDrawable(getDrawable(R.drawable.ic_toast));
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM,0,10);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(imageView);
+        toast.show();
+    }
+
 }

@@ -38,8 +38,12 @@ public class SinkTesterService extends Service {
             ".setauthmode";
     public static final String BROADCAST_ACTION_REJECT_CONNECTION = "castplus.intent.action" +
             ".rejectconnection";
-    public static final String BROADCAST_ACTION_ALLOW_CONNECTION = "castplus.intent.action" +
-            ".allowconnection";
+    public static final String BROADCAST_ACTION_ALLOW_CONNECTION_ALWAYS = "castplus.intent.action" +
+            ".allowconnection"+".always";
+
+    public static final String BROADCAST_ACTION_ALLOW_CONNECTION_ONCE = "castplus.intent.action" +
+            ".allowconnection"+".once";
+
     public static final String BROADCAST_ACTION_PLAY = "castplus.intent.action" +
             ".play";
     public static final String BROADCAST_ACTION_PAUSE = "castplus.intent.action" +
@@ -59,13 +63,14 @@ public class SinkTesterService extends Service {
 
     private boolean mIsPinShown = false;
 
-    public ProjectionDevice mProjectionDevice;
+    public ProjectionDevice mProjectionDevice; //....
     private boolean mIsDiscoverable;
     private BluetoothAdapter mBluetoothAdapter;
     private Context mContext;
     private PlayerClient mPlayerClient;
     private CallbackHandler mCallbackHandler;
     private boolean mCastServiceReady = false;
+
     private IEventListener mCallback = new IEventListener.Stub() {
         public boolean onEvent(Event event) {
             int eventId = event.getEventId();
@@ -96,20 +101,26 @@ public class SinkTesterService extends Service {
                 disconnectDevice();
             } else if (BROADCAST_ACTION_SET_DISCOVERABLE.equals(action)) {
                 mIsDiscoverable = intent.getBooleanExtra("discoverable", true);
-                Log.d(TAG, "mIsDiscoverable: " + mIsDiscoverable);
                 setDiscoverable(mIsDiscoverable);
             } else if (BROADCAST_ACTION_SET_AUTH_MODE.equals(action)) {
                 boolean needPassword = intent.getBooleanExtra("needpassword", false);
                 String password = intent.getStringExtra("password");
                 boolean isNewPassword = intent.getBooleanExtra("isnewpassword", false);
                 setAuthMode(needPassword, password, isNewPassword);
-            } else if (BROADCAST_ACTION_ALLOW_CONNECTION.equals(action)) {
+            } else if (BROADCAST_ACTION_ALLOW_CONNECTION_ALWAYS.equals(action)) {
                 if (mPlayerClient != null) {
                     mPlayerClient.setConnectRequestChooseResult(new ConnectRequestChoice(Constant.CONNECT_REQ_CHOICE_ALWAYS, mProjectionDevice));
                 } else {
                     Log.e(TAG, "mPlayerClient is null.");
                 }
-            } else if (BROADCAST_ACTION_REJECT_CONNECTION.equals(action)) {
+            }else if (BROADCAST_ACTION_ALLOW_CONNECTION_ONCE.equals(action)) {
+                if (mPlayerClient != null) {
+                    mPlayerClient.setConnectRequestChooseResult(new ConnectRequestChoice(Constant.CONNECT_REQ_CHOICE_ONCE, mProjectionDevice));
+                } else {
+                    Log.e(TAG, "mPlayerClient is null.");
+                }
+            }
+            else if (BROADCAST_ACTION_REJECT_CONNECTION.equals(action)) {
                 if (mPlayerClient != null) {
                     mPlayerClient.setConnectRequestChooseResult(new ConnectRequestChoice(Constant.CONNECT_REQ_CHOICE_REJECT, mProjectionDevice));
                 } else {
@@ -135,7 +146,8 @@ public class SinkTesterService extends Service {
         broadcastFilter.addAction(BROADCAST_ACTION_SET_DISCOVERABLE);
         broadcastFilter.addAction(BROADCAST_ACTION_SET_AUTH_MODE);
         broadcastFilter.addAction(BROADCAST_ACTION_REJECT_CONNECTION);
-        broadcastFilter.addAction(BROADCAST_ACTION_ALLOW_CONNECTION);
+        broadcastFilter.addAction(BROADCAST_ACTION_ALLOW_CONNECTION_ALWAYS);
+        broadcastFilter.addAction(BROADCAST_ACTION_ALLOW_CONNECTION_ONCE);
         broadcastFilter.addAction(BROADCAST_ACTION_PLAY);
         broadcastFilter.addAction(BROADCAST_ACTION_PAUSE);
         broadcastFilter.addAction(BluetoothAdapter.ACTION_LOCAL_NAME_CHANGED);
@@ -184,7 +196,6 @@ public class SinkTesterService extends Service {
             Log.d(TAG, "mPlayerClient is null.");
         }
 
-        //restart service
         Intent intent = new Intent(mContext, SinkTesterService.class);
         startService(intent);
     }
@@ -193,10 +204,8 @@ public class SinkTesterService extends Service {
         if(!mCastServiceReady || !PlayActivity.isSurfaceReady) {
             return;
         }
-        Log.d(TAG, "startPlay() called.");
         if (mPlayerClient != null) {
             mPlayerClient.setHiSightSurface(mHiView.getHolder().getSurface());
-            Log.d(TAG, "deviceId: " + mProjectionDevice.getDeviceId());
             mPlayerClient.play(new TrackControl(mProjectionDevice.getDeviceId()));
             mCastServiceReady = false;
         } else {
@@ -210,6 +219,7 @@ public class SinkTesterService extends Service {
             mPlayerClient.pause(new TrackControl(mProjectionDevice.getDeviceId()));
         }
     }
+
     private void startAlertActivity(String pinCode, String deviceName) {
         Log.d(TAG, "startAlertActivity() called.");
         Intent intent = new Intent(mContext, AlertActivity.class);
@@ -218,6 +228,12 @@ public class SinkTesterService extends Service {
         intent.putExtra("devicename", deviceName);
         startActivity(intent);
     }
+
+
+
+
+
+
 
     private void startPinActivity(String pinCode, String deviceName) {
         Log.d(TAG, "startPinActivity() called.");
@@ -234,6 +250,10 @@ public class SinkTesterService extends Service {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
+
+
+
 
     private void sendBroadcastToActivity(String broadcastAction) {
         Log.d(TAG, "sendBroadcastToActivity() called.");
@@ -259,6 +279,8 @@ public class SinkTesterService extends Service {
         }
     }
 
+
+
     private DeviceInfo getDeviceInfo() {
         Log.d(TAG, "getDeviceInfo() called.");
         String deviceName = "CastPlusTestDevice";
@@ -268,6 +290,7 @@ public class SinkTesterService extends Service {
 
         return new DeviceInfo(deviceName, DeviceInfo.TYPE_TV);
     }
+
 
     private void setDiscoverable(boolean isDiscoverable) {
         Log.d(TAG, "setDiscoverable() called.");
@@ -292,23 +315,14 @@ public class SinkTesterService extends Service {
         if ((mode & OPTIMIZATION_TAG_CODEC_CONFIGURE_FLAG) != 0) {
             capability.setMediaCodecConfigureFlag(2);
         }
-
         if ((mode & OPTIMIZATION_TAG_MEDIA_FORMAT_INTEGER) != 0) {
-
         }
-
         if ((mode & OPTIMIZATION_TAG_MEDIA_FORMAT_FLOAT) != 0) {
-
         }
-
         if ((mode & OPTIMIZATION_TAG_MEDIA_FORMAT_LONG) != 0) {
-
         }
-
         if ((mode & OPTIMIZATION_TAG_MEDIA_FORMAT_STRING) != 0) {
-
         }
-
         if (mPlayerClient != null) {
             mPlayerClient.setCapability(capability);
         } else {
@@ -333,7 +347,6 @@ public class SinkTesterService extends Service {
         @Override
         public void handleMessage(Message msg) {
             if (msg == null) return;
-
             Log.d(TAG, "msg " + msg.what);
             switch (msg.what) {
                 case Constant.EVENT_ID_SERVICE_BIND_SUCCESS:
@@ -342,7 +355,6 @@ public class SinkTesterService extends Service {
                     int framerate = 30;
                     int optimizationMode = 1;
                     setCapability(screenSize, videoSize, framerate, optimizationMode);
-
                     setDiscoverable(mIsDiscoverable);
 
                     boolean needPassword = SharedPreferenceUtil.getAuthMode(mContext);
@@ -350,12 +362,13 @@ public class SinkTesterService extends Service {
                     boolean isNewPassword = false;
                     setAuthMode(needPassword, password, isNewPassword);
                     break;
+
                 case Constant.EVENT_ID_CONNECT_REQ: {
+                    Log.e(TAG, "handleMessage: "+"EVENT_ID_CONNECT_REQ" );
                     if (mIsPinShown) {
                         sendBroadcastToActivity(BROADCAST_ACTION_FINISH_PIN_ACTIVITY);
                         mIsPinShown = false;
                     }
-
                     DisplayInfo displayInfo = (DisplayInfo) msg.obj;
                     if (displayInfo != null) {
                         mProjectionDevice = displayInfo.getProjectionDevice();
@@ -366,48 +379,55 @@ public class SinkTesterService extends Service {
                 }
                 break;
                 case Constant.EVENT_ID_PIN_CODE_SHOW: {
+                    Log.e(TAG, "handleMessage: "+"EVENT_ID_PIN_CODE_SHOW" );
                     mIsPinShown = true;
                     DisplayInfo displayInfo = (DisplayInfo) msg.obj;
                     if ((displayInfo != null) && (mProjectionDevice = displayInfo.getProjectionDevice()) != null) {
                         String pinCode = displayInfo.getPinCode();
                         String deviceName = mProjectionDevice.getDeviceName();
-
-                        startPinActivity(pinCode, deviceName);
-
-                        if (mPlayerClient != null) {
-                            mPlayerClient.setConnectRequestChooseResult(new ConnectRequestChoice(Constant.CONNECT_REQ_CHOICE_ALWAYS, mProjectionDevice));
-                        } else {
-                            Log.e(TAG, "mPlayerClient is null.");
-                        }
+                        startAlertActivity(pinCode,deviceName);
                     } else {
                         Log.e(TAG, "displayInfo is null.");
                     }
                 }
                 break;
                 case Constant.EVENT_ID_PIN_CODE_SHOW_FINISH:
+                    Log.e(TAG, "handleMessage: "+"EVENT_ID_PIN_CODE_SHOW_FINISH" );
                     if (mIsPinShown) {
                         sendBroadcastToActivity(BROADCAST_ACTION_FINISH_PIN_ACTIVITY);
                         mIsPinShown = false;
                     }
                     break;
+
+
                 case Constant.EVENT_ID_DEVICE_CONNECTED:
+                    Log.e(TAG, "handleMessage: "+"EVENT_ID_DEVICE_CONNECTED" );
                     break;
+
                 case Constant.EVENT_ID_CASTING:
+                    Log.e(TAG, "handleMessage: "+"EVENT_ID_CASTING" );
                     break;
+
                 case Constant.EVENT_ID_PAUSED:
                     mCastServiceReady = true;
                     startPlay();
                     break;
+
                 case Constant.EVENT_ID_DEVICE_DISCONNECTED:
+                    Log.e(TAG, "handleMessage: "+"EVENT_ID_DEVICE_DISCONNECTED" );
                     if (mIsPinShown) {
                         sendBroadcastToActivity(BROADCAST_ACTION_FINISH_PIN_ACTIVITY);
                         mIsPinShown = false;
                     }
                     sendBroadcastToActivity(BROADCAST_ACTION_FINISH_PLAY_ACTIVITY);
                     break;
+
                 case Constant.EVENT_ID_SET_SURFACE:
+                    Log.e(TAG, "handleMessage: "+"EVENT_ID_SET_SURFACE" );
                     break;
+
                 case Constant.EVENT_ID_NETWORK_QUALITY: {
+                    Log.e(TAG, "handleMessage: "+"EVENT_ID_NETWORK_QUALITY" );
                     DisplayInfo displayInfo = (DisplayInfo) msg.obj;
                     if (displayInfo != null) {
                         int networkQuality = displayInfo.getNetworkQuality();

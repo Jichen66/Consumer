@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import com.huawei.agconnect.auth.AGConnectAuthCredential;
 import com.huawei.agconnect.auth.AGConnectUser;
 import com.huawei.agconnect.auth.HWGameAuthProvider;
 import com.huawei.agconnect.auth.HwIdAuthProvider;
+import com.huawei.agconnect.config.AGConnectServicesConfig;
 import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.jos.games.Games;
 import com.huawei.hms.jos.games.PlayersClient;
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         hwidBtn = findViewById(R.id.hwid_button);
         gameBtn = findViewById(R.id.game_button);
         resultText = findViewById(R.id.result_text);
+
+        String appid = AGConnectServicesConfig.fromContext(getApplicationContext()).getString("client/app_id");
+        Log.i("1111", appid);
 
         anonymousBtn.setOnClickListener(view -> AGConnectAuth.getInstance().signInAnonymously()
                 .addOnSuccessListener(signInResult -> {

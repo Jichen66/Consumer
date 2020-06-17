@@ -4,7 +4,7 @@ The demo App demonstrates Huawei Identity client APIs and usages.
 
 Documentation can be found at this 
 
-[link](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/about-the-service).
+[link](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/56693855).
 
 
 ## Table Of Content
@@ -68,7 +68,7 @@ If the HMS is missing, the device will prompt you to install or upgrade HMS firs
 
 This demo come with pre-configured `agconnect-services.json`, HMS dependencies, signing keys and
 in-app products. These pre-configured settings are for demo purpose only, please refer to the 
-[Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/about-the-service)
+[Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/10307459)
 for guide of adopting Huawei Identity.
 
 

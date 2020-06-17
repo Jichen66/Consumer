@@ -22,11 +22,15 @@ import com.huawei.castpluskit.Event;
 import com.huawei.castpluskit.IEventListener;
 import com.huawei.castpluskit.PlayerClient;
 
+
+
+
 public class AlertActivity extends Activity implements View.OnFocusChangeListener {
     private static final String TAG = "AlertActivity";
     private TextView mAlertTextView;
     private Button mRejectButton;
-    private Button mConfirmButton;
+    private Button mConfirmAlwaysButton;
+    private Button mConfirmOnceButton;
     private String mPinCode;
     private String mDeviceName;
     private Drawable mBackgroundDrawable;
@@ -69,16 +73,16 @@ public class AlertActivity extends Activity implements View.OnFocusChangeListene
 
         mAlertTextView = findViewById(R.id.alert_textview);
         mRejectButton = findViewById(R.id.reject_button);
-        mConfirmButton = findViewById(R.id.confirm_button);
+        mConfirmAlwaysButton = findViewById(R.id.confirm_button_always);
+        mConfirmOnceButton = findViewById(R.id.confirm_button_once);
 
         mBackgroundDrawable = getDrawable(R.drawable.svgdialog);
         mButtonFocusDrawable = getDrawable(R.drawable.svgbutton_selected);
         mButtonUnfocusDrawable = getDrawable(R.drawable.svgbutton_unselected);
 
         getWindow().setBackgroundDrawable(mBackgroundDrawable);
-        getWindow().setLayout(Utils.dp2px(this, 420), Utils.dp2px(this, 152));
+        getWindow().setLayout(Utils.dp2px(this, 620), Utils.dp2px(this, 162)); //420 152  -> 620 162
         getWindow().setGravity(Gravity.CENTER);
-
         Intent intent = getIntent();
         if (intent != null) {
             mPinCode = intent.getStringExtra("pincode");
@@ -94,10 +98,11 @@ public class AlertActivity extends Activity implements View.OnFocusChangeListene
                 disconnectIntent.setAction(SinkTesterService.BROADCAST_ACTION_REJECT_CONNECTION);
                 sendBroadcast(disconnectIntent);
                 finish();
+                Log.d(TAG, "onClick: reject");
             }
         });
 
-        mConfirmButton.setOnClickListener(new View.OnClickListener() {
+        mConfirmAlwaysButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(AlertActivity.this, PinActivity.class);
@@ -105,14 +110,32 @@ public class AlertActivity extends Activity implements View.OnFocusChangeListene
                 intent2.putExtra("devicename", mDeviceName);
                 startActivity(intent2);
                 Intent connectIntent = new Intent();
-                connectIntent.setAction(SinkTesterService.BROADCAST_ACTION_ALLOW_CONNECTION);
+                connectIntent.setAction(SinkTesterService.BROADCAST_ACTION_ALLOW_CONNECTION_ALWAYS);
                 sendBroadcast(connectIntent);
                 finish();
+                Log.d(TAG, "onClick: always");
+            }
+        });
+
+        mConfirmOnceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent3 = new Intent(AlertActivity.this, PinActivity.class);
+                intent3.putExtra("pincode", mPinCode);
+                intent3.putExtra("devicename", mDeviceName);
+                startActivity(intent3);
+                Intent connectIntent = new Intent();
+                connectIntent.setAction(SinkTesterService.BROADCAST_ACTION_ALLOW_CONNECTION_ONCE);
+                sendBroadcast(connectIntent);
+                finish();
+                Log.d(TAG, "onClick: once");
             }
         });
 
         mRejectButton.setOnFocusChangeListener(this);
-        mConfirmButton.setOnFocusChangeListener(this);
+        mConfirmAlwaysButton.setOnFocusChangeListener(this);
+        mConfirmOnceButton.setOnFocusChangeListener(this);
+
 
         mCallbackHandler = new CallbackHandler(getMainLooper());
         mPlayerClient = PlayerClient.getInstance();
@@ -120,9 +143,17 @@ public class AlertActivity extends Activity implements View.OnFocusChangeListene
     }
 
     @Override
+    public void onBackPressed() {
+        Intent discconnectIntent = new Intent();
+        discconnectIntent.setAction(SinkTesterService.BROADCAST_ACTION_REJECT_CONNECTION);
+        sendBroadcast(discconnectIntent);
+        super.onBackPressed();
+    }
+
+    @Override
     public void onFocusChange(View v, boolean hasFocus) {
         Log.d(TAG, "onFocusChange() called, view: " + v.getId() + "hasFocus: " + hasFocus);
-        if ((v.getId() != R.id.confirm_button) && (v.getId() != R.id.reject_button)) {
+        if ((v.getId() != R.id.confirm_button_always) && (v.getId() != R.id.reject_button)&& (v.getId() != R.id.confirm_button_once)) {
             return;
         }
         if (hasFocus) {
@@ -150,7 +181,6 @@ public class AlertActivity extends Activity implements View.OnFocusChangeListene
         @Override
         public void handleMessage(Message msg) {
             if (msg == null) return;
-
             Log.d(TAG, "msg " + msg.what);
             switch (msg.what) {
                 case Constant.EVENT_ID_DEVICE_DISCONNECTED:
@@ -161,5 +191,5 @@ public class AlertActivity extends Activity implements View.OnFocusChangeListene
                     break;
             }
         }
-    };
+    }
 }
